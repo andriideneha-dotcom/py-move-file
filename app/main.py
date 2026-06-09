@@ -5,8 +5,10 @@ import shutil
 def move_file(command: str) -> None:
     parts = command.split()
 
-    src = parts[1]
-    dst = parts[2]
+    if len(parts) != 3 or parts[0] != "mv":
+        return
+
+    _, src, dst = parts
 
     if dst.endswith("/"):
         os.makedirs(dst, exist_ok=True)
@@ -16,4 +18,5 @@ def move_file(command: str) -> None:
         if parent_dir:
             os.makedirs(parent_dir, exist_ok=True)
 
-    shutil.move(src, dst)
+    shutil.copy2(src, dst)
+    os.remove(src)
