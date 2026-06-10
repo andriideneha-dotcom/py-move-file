@@ -11,12 +11,24 @@ def move_file(command: str) -> None:
     _, src, dst = parts
 
     if dst.endswith("/"):
-        os.makedirs(dst, exist_ok=True)
+        _create_dirs(dst)
         dst = os.path.join(dst, os.path.basename(src))
     else:
         parent_dir = os.path.dirname(dst)
         if parent_dir:
-            os.makedirs(parent_dir, exist_ok=True)
+            _create_dirs(parent_dir)
 
     shutil.copy2(src, dst)
     os.remove(src)
+
+
+def _create_dirs(path: str) -> None:
+    parts = path.replace("\\", "/").split("/")
+    current = ""
+
+    for part in parts:
+        if not part:
+            continue
+        current = os.path.join(current, part)
+        if not os.path.exists(current):
+            os.mkdir(current)
